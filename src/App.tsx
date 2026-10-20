@@ -1,5 +1,6 @@
 import { createSignal, onMount, Show } from "solid-js";
 import { api } from "./lib/api";
+import { TOUCH_ID_UI_ENABLED } from "./lib/features";
 import Vault from "./components/Vault";
 import { FingerprintIcon } from "./components/icons";
 import "./App.css";
@@ -21,7 +22,7 @@ function App() {
     try {
       const exists = await api.vaultExists();
       setMode(exists ? "unlock" : "create");
-      if (exists) {
+      if (exists && TOUCH_ID_UI_ENABLED) {
         // 仅当设备支持生物识别且已存入受保护主密码时，才显示 Touch ID 解锁入口。
         const [avail, enabled] = await Promise.all([
           api.touchIdAvailable().catch(() => false),

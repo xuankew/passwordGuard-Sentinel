@@ -1,5 +1,6 @@
 import { createSignal, onMount, Show, For } from "solid-js";
 import { api, Settings, Accent, Density, ImportSummary } from "../lib/api";
+import { TOUCH_ID_UI_ENABLED } from "../lib/features";
 import { applyAppearance } from "../lib/theme";
 import { XIcon, GearIcon, DownloadIcon, UploadIcon, FingerprintIcon, CheckIcon, KeyIcon } from "./icons";
 
@@ -333,7 +334,8 @@ export default function SettingsPanel(props: Props) {
                   <div class="form-sub">选「从不」将不再自动清除剪贴板，敏感内容可能被其他程序读取</div>
                 </div>
 
-                {/* Touch ID */}
+                {/* Touch ID（UI 由功能开关隐藏，见 src/lib/features.ts；后端保留） */}
+                <Show when={TOUCH_ID_UI_ENABLED}>
                 <div class="form-group">
                   <label>Touch ID 解锁</label>
                   <div class="setting-line">
@@ -383,6 +385,7 @@ export default function SettingsPanel(props: Props) {
                     <div class="form-error" style={{ "margin-top": "10px" }}>{touchErr()}</div>
                   </Show>
                 </div>
+                </Show>
 
                 {/* 修改主密码 */}
                 <div class="form-group">
