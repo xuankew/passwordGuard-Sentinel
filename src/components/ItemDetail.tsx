@@ -140,11 +140,37 @@ function TotpField(props: { secret: string; onToast: (m: string) => void }) {
   );
 }
 
-function PlainField(props: { label: string; children: any }) {
+function PlainField(props: {
+  label: string;
+  copyValue?: string;
+  onToast?: (m: string) => void;
+  children: any;
+}) {
+  const [copied, setCopied] = createSignal(false);
+
+  async function copy() {
+    if (!props.copyValue || !props.onToast) return;
+    const secs = await api.copySecret(props.copyValue);
+    setCopied(true);
+    props.onToast(
+      secs > 0 ? `已复制${props.label}，${secs} 秒后自动清除` : `已复制${props.label}（按设置不自动清除）`
+    );
+    setTimeout(() => setCopied(false), 1500);
+  }
+
   return (
     <div class="field-row">
       <div class="field-label">{props.label}</div>
-      <div class="plain-val">{props.children}</div>
+      <div class="plain-val" classList={{ "with-copy": !!props.copyValue }}>
+        {props.children}
+        <Show when={props.copyValue}>
+          <button class="mini-btn" classList={{ copied: copied() }} title="复制" onClick={copy}>
+            <Show when={copied()} fallback={<CopyIcon size={16} />}>
+              <CheckIcon size={16} />
+            </Show>
+          </button>
+        </Show>
+      </div>
     </div>
   );
 }
@@ -153,7 +179,7 @@ function LoginBody(props: { k: Login; onToast: (m: string) => void }) {
   return (
     <>
       <Show when={props.k.username}>
-        <PlainField label="用户名">
+        <PlainField label="用户名" copyValue={props.k.username} onToast={props.onToast}>
           <span style={{ "font-family": "var(--mono)" }}>{props.k.username}</span>
         </PlainField>
       </Show>
