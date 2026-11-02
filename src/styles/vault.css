@@ -466,6 +466,10 @@
   padding: 14px;
   white-space: pre-wrap;
   word-break: break-word;
+  /* 全局 body 禁选中文本（App.css），备注需可拖选复制 */
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
 }
 
 /* TOTP */
