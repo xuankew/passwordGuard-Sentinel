@@ -228,6 +228,12 @@ function ApiKeyBody(props: { k: ApiKey; onToast: (m: string) => void }) {
   );
 }
 
+function fmtDateTime(secs: number): string {
+  const d = new Date(secs * 1000);
+  const p = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 function DetailView(props: Props & { item: Item }) {
   const item = () => props.item;
   const login = () => (item().kind.type === "login" ? (item().kind as Login) : undefined);
@@ -243,6 +249,7 @@ function DetailView(props: Props & { item: Item }) {
         <div style={{ "min-width": "0" }}>
           <div class="detail-title">{item().title}</div>
           <div class="detail-sub">{kindLabel(item().kind)}</div>
+          <div class="detail-meta">创建于 {fmtDateTime(item().created_at)}</div>
         </div>
         <div class="detail-actions">
           <button class="icon-btn" title="编辑" onClick={() => props.onEdit(item())}>
